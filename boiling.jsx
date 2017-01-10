@@ -30,14 +30,15 @@ function tryConvert(value,tUnit){
 
 
 function BoilingVerdict(props){
-	console.log(props.celcius)
-	if(props.celcius >= 100){
+	if(
+		((props.temperature >= 100) && (props.tUnit == 'c'))
+	|| ((props.temperature >= 212)  && (props.tUnit == 'f'))){
 		return(
-			<p>The water would boil at {props.celcius} Celcius</p>
+			<p>The water would boil at {props.temperature} {props.tUnit}</p>
 		)
 	}else{
 		return(
-			<p>The water would NOT boil at {props.celcius} Celcius</p>
+			<p>The water would NOT boil at {props.temperature} {props.tUnit}</p>
 		)		
 	}
 }
@@ -66,11 +67,14 @@ var TemperatureInput = React.createClass({
 	}
 })
 
+	
+
+
 var Calculator = React.createClass({
 
 	getInitialState: function() {
 		return{
-			value: 0,
+			value: 32,
 			scale: 'c'
 		}
 	},
@@ -89,6 +93,13 @@ var Calculator = React.createClass({
 		})
 	},
 
+	handleKelvinChange: function(value){
+		this.setState({
+			scale: 'k', 
+			value: value
+		})
+	},
+
 	render: function(){
 		var scale = this.state.scale;
 		var value = this.state.value;
@@ -98,6 +109,10 @@ var Calculator = React.createClass({
 		}else if(this.state.scale == 'f'){
 			var fTemp = value;
 			var cTemp = tryConvert(value,'f');
+		}else{
+			var fTemp = value;
+			var cTemp = tryConvert(value,'f');
+
 		}
 		// var userEnteredTemp = this.state.value;
 		// if(userEnteredTemp >= 100){
@@ -114,8 +129,10 @@ var Calculator = React.createClass({
 					value={cTemp} 
 					onChange={this.handleCelciusChange} 
 				/>
-				<TemperatureInput tUnits="Fahrenheit" value={fTemp} onChange={this.handleFahrenheitChange} />
-				<BoilingVerdict celcius={Number(cTemp)} />
+				<TemperatureInput tUnits="Fahrenheit" value={fTemp} onChange={this.handleFahrenheitChange} />	
+				{/* <TemperatureInput tUnits="Kelvin" value={kTemp} onChange={this.handleKelvinChange} /> */ }
+				<BoilingVerdict temperature={Number(cTemp)} tUnit="c" />
+				<BoilingVerdict temperature={Number(fTemp)} tUnit="f" />
 			</div>
 		)
 	}
