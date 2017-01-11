@@ -15,6 +15,8 @@ var map = new google.maps.Map(
 var infoWindow = new google.maps.InfoWindow({});
 // Make a markers array for use later
 var markers = [];
+// Make an array to hold our PoI
+var poIMarkers = [];
 // Set up the directionsService so we can use it
 var directionsService = new google.maps.DirectionsService();
 // Set up directionsDisplay so we can use it
@@ -78,6 +80,7 @@ function createPoI(place){
 		infoWindow.setContent(place.name);
 		infoWindow.open(map, marker);
 	});
+	poIMarkers.push(marker);
 }
 
 /******************* REACT *******************/
@@ -112,7 +115,7 @@ var GoogleCity = React.createClass({
 		map = new google.maps.Map(
 			document.getElementById('map'),
 			{
-				zoom: 10,
+				zoom: 3,
 				center: cityLL
 			}
 		)
@@ -137,6 +140,11 @@ var GoogleCity = React.createClass({
 			}
 		);
 
+		var bounds = new google.maps.LatLngBounds(cityLL);
+		poIMarkers.map(function(currMarker, index){
+			bounds.extend(currMarker.getPosition());
+		})
+		map.fitBounds(bounds);
 
 
 	},
