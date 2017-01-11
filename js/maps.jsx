@@ -32,8 +32,6 @@ function calcRoute() {
   	// console.log(status);
   	// console.log(result);
     if (status == 'OK') {
-    	directionsDisplay.setMap(null);
-    	directionsDisplay.setMap(map);
       	directionsDisplay.setDirections(result);
     }
   });
@@ -55,7 +53,8 @@ function createMarker(city){
 		position: cityLL,
 		map: map,
 		title: city.city,
-		icon: icon
+		icon: icon,
+		animation: google.maps.Animation.DROP
 	});
 	// We only want ONE infowindow!
 	// var infoWindow = new google.maps.InfoWindow({});
@@ -93,12 +92,39 @@ var GoogleCity = React.createClass({
 		console.log("Someone Clicked on a city!");
 		google.maps.event.trigger(markers[this.props.cityObject.yearRank-1],"click");
 	},
+	zoomToCity: function(event){
+		var cityLL = new google.maps.LatLng(this.props.cityObject.lat, this.props.cityObject.lon);
+		// Create a new map at this cities center
+		map = new google.maps.Map(
+			document.getElementById('map'),
+			{
+				zoom: 10,
+				center: cityLL
+			}
+		)
+		// Add direction service to new map
+		// directionsDisplay.setMap(map);
+		var service = new google.maps.places.PlacesService(map);
+		service.nearbySearch(
+			{
+				location: cityLL,
+				radius: 500,
+				type: ['store']
+			}, 
+			function(results, status){
+				console.log(results);
+			}
+		);
+
+
+	},
 	render: function(){
 		return(
 			<tr>
 				<td className="city-name" onClick={this.handleClickedCity}>{this.props.cityObject.city}</td>
 				<td className="city-rank">{this.props.cityObject.yearRank}</td>
-				<td><button onClick={this.getDirections}>Get Directions</button></td>
+				<td><button className="btn btn-primary" onClick={this.getDirections}>Get Directions</button></td>
+				<td><button className="btn btn-success" onClick={this.zoomToCity}>Zoom</button></td>				
 			</tr>
 		)
 	}
