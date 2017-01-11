@@ -1,14 +1,46 @@
+
 /******************* GOOGLE *******************/
 // Create the google map
+// First set mapOptions so when we make the Map constructor it's easier to read
+var mapOptions = {
+	center: {lat: 39.8282, lng: -98.5795},
+	zoom: 4
+};
+// Now make the map
 var map = new google.maps.Map(
 	document.getElementById('map'),
-	{
-		center: {lat: 39.8282, lng: -98.5795},
-		zoom: 4
-	}
+	mapOptions
 );
+// Make an infoWindow for use later
 var infoWindow = new google.maps.InfoWindow({});
+// Make a markers array for use later
 var markers = [];
+// Set up the directionsService so we can use it
+var directionsService = new google.maps.DirectionsService();
+// Set up directionsDisplay so we can use it
+var directionsDisplay = new google.maps.DirectionsRenderer();
+directionsDisplay.setMap(map);
+
+function calcRoute() {
+  var request = {
+    origin: start,
+    destination: end,
+    travelMode: 'DRIVING'
+  };
+  // console.log(request);
+  directionsService.route(request, function(result, status) {
+  	// console.log(status);
+  	// console.log(result);
+    if (status == 'OK') {
+    	directionsDisplay.setMap(null);
+    	directionsDisplay.setMap(map);
+      	directionsDisplay.setDirections(result);
+    }
+  });
+}
+var start = "Atlanta, GA";
+var end;
+
 
 
 // A function place a marker at a city location
@@ -38,6 +70,25 @@ function createMarker(city){
 /******************* REACT *******************/
 
 var GoogleCity = React.createClass({
+
+	// componentDidMount: function() {
+	// 	console.log("A City Component Just Mounted Hook!")
+	// },
+
+	// componentWillMount: function() {
+	// 	console.log("City Component Mounted Hook!")
+	// },
+
+	// componentWillReceiveProps: function(nextProps) {
+	// 	console.log("Just received",nextProps)	
+	// },
+
+	getDirections: function(){
+		console.log("Test")
+		end = this.props.cityObject.city;
+		calcRoute();
+	},
+
 	handleClickedCity: function(event){
 		console.log("Someone Clicked on a city!");
 		google.maps.event.trigger(markers[this.props.cityObject.yearRank-1],"click");
@@ -47,6 +98,7 @@ var GoogleCity = React.createClass({
 			<tr>
 				<td className="city-name" onClick={this.handleClickedCity}>{this.props.cityObject.city}</td>
 				<td className="city-rank">{this.props.cityObject.yearRank}</td>
+				<td><button onClick={this.getDirections}>Get Directions</button></td>
 			</tr>
 		)
 	}
@@ -58,6 +110,18 @@ var Cities = React.createClass({
 		return{
 			currCities: this.props.cities
 		}
+	},
+
+	// componentDidMount: function() {
+	// 	console.log("Component Just Mounted Hook!")
+	// },
+
+	// componentWillMount: function() {
+	// 	console.log("Component Mounted Hook!")
+	// },
+
+	setStartingLocation: function(event){
+		start = event.target.value
 	},
 
 	handleInputChange: function(event){
@@ -102,6 +166,9 @@ var Cities = React.createClass({
 				<form onSubmit={this.updateMarkers}>
 					<input type="text" onChange={this.handleInputChange} />
 					<input type="submit" value="Update Markers" />
+				</form>
+				<form>
+					<input type="text" placeholder="Please enter starting location" onChange={this.setStartingLocation} />
 				</form>
 				<table>
 					<thead>

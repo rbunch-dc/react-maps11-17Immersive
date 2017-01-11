@@ -3,15 +3,24 @@
 <head>
 	<title>Google Maps (Reborn)</title>
 
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
 	<style type="text/css" media="screen">
 		#map{
 			height: 100vh;
-			width: 50%;
+			width: 75%;
 			float: left;
 		}
 		#cities-container{
-			width: 50%;
+			width: 25%;
 			float: left;
+		}
+		.city-list{
+			position: absolute;
+			right: 50px;
+			background-color: white;
+			opacity: .8;
 		}
 		th, td{
 			border: 1px solid black;
@@ -35,7 +44,11 @@
 	<!-- Include react, reactDOM, and bable -->
 	<script src="https://fb.me/react-15.1.0.js"></script>
 	<script src="https://fb.me/react-dom-15.1.0.js"></script>
+	
+	<!-- Include React Router -->
+	<script src="https://npmcdn.com/react-router@2.4.0/umd/ReactRouter.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+
 
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD94e5eB8SkTv6y97pdRpsY3t4VQaz6Nqc"
     ></script>
